@@ -46,3 +46,12 @@ Lancer les tests :
 ```bash
 pytest
 ```
+
+### Couverture de code (lignes + branches)
+
+```bash
+pytest --cov=fmgr_app.file_manager --cov-branch --cov-report=term-missing --cov-report=html
+```
+
+Le rapport HTML est dans `htmlcov/index.html`. On cible `FileManager` (la classe testee unitairement).
+Resultat : 100% des lignes et 100% des branches (if/else) couvertes.
