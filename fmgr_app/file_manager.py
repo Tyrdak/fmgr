@@ -21,8 +21,7 @@ class FileManager:
             return
 
         def copy(file):
-            if not self.fs.exists(file):
-                raise FileNotFoundError(f"{file} does not exist")
+            self._check_exists(file)
             created = self.fs.copy(file, destination)
             return lambda: self._remove(created)
 
@@ -34,8 +33,7 @@ class FileManager:
             return
 
         def move(file):
-            if not self.fs.exists(file):
-                raise FileNotFoundError(f"{file} does not exist")
+            self._check_exists(file)
             new_path = self.fs.move(file, destination)
             return lambda: self.fs.move(new_path, file)
 
@@ -50,7 +48,7 @@ class FileManager:
                 self.fs.remove_dir(file)
             else:
                 raise FileNotFoundError(f"{file} does not exist")
-            return None  # pas de rollback possible pour une suppression
+            # pas de return : pas de rollback possible pour une suppression
 
         self._run("Delete", delete, "{} file(s)/folder(s) deleted")
 
@@ -68,6 +66,10 @@ class FileManager:
             return
         count = self._process(operation, files, action)
         self.ui.show_message(done_message.format(count))
+
+    def _check_exists(self, file):
+        if not self.fs.exists(file):
+            raise FileNotFoundError(f"{file} does not exist")
 
     def _remove(self, path):
         if self.fs.is_dir(path):
