@@ -17,25 +17,29 @@ class FileManager:
 
     def copy_files(self, destination):
         """Copy selected files"""
+        if not self._check_destination("Copy", destination):
+            return
+
         def copy(file):
             if not self.fs.exists(file):
                 raise FileNotFoundError(f"{file} does not exist")
             created = self.fs.copy(file, destination)
             return lambda: self._remove(created)
 
-        count = self._process("Copy", copy)
-        self.ui.show_message(f"{count} file(s) copied")
+        self._run("Copy", copy, "{} file(s) copied")
 
     def move_files(self, destination):
         """Move selected files"""
+        if not self._check_destination("Move", destination):
+            return
+
         def move(file):
             if not self.fs.exists(file):
                 raise FileNotFoundError(f"{file} does not exist")
             new_path = self.fs.move(file, destination)
             return lambda: self.fs.move(new_path, file)
 
-        count = self._process("Move", move)
-        self.ui.show_message(f"{count} file(s) moved")
+        self._run("Move", move, "{} file(s) moved")
 
     def delete_files(self):
         """Delete selected files"""
@@ -48,8 +52,22 @@ class FileManager:
                 raise FileNotFoundError(f"{file} does not exist")
             return None  # pas de rollback possible pour une suppression
 
-        count = self._process("Delete", delete)
-        self.ui.show_message(f"{count} file(s)/folder(s) deleted")
+        self._run("Delete", delete, "{} file(s)/folder(s) deleted")
+
+    def _check_destination(self, operation, destination):
+        if destination is None or not destination.strip():
+            self.ui.show_message(f"{operation} error: no destination")
+            return False
+        return True
+
+    def _run(self, operation, action, done_message):
+        try:
+            files = list(self.selection.get_selected_files() or [])
+        except Exception as e:
+            self.ui.show_message(f"{operation} error: {e}")
+            return
+        count = self._process(operation, files, action)
+        self.ui.show_message(done_message.format(count))
 
     def _remove(self, path):
         if self.fs.is_dir(path):
@@ -57,13 +75,12 @@ class FileManager:
         else:
             self.fs.remove_file(path)
 
-    def _process(self, operation, action):
-        """Applique action sur chaque fichier selectionne en gerant les erreurs.
+    def _process(self, operation, files, action):
+        """Applique action sur chaque fichier en gerant les erreurs.
 
         action(file) fait le traitement et retourne une fonction d'annulation (ou None).
         Retourne le nombre de fichiers traites.
         """
-        files = list(self.selection.get_selected_files())
         undo_stack = []
         count = 0
         always_ignore = False
