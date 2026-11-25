@@ -52,9 +52,21 @@ class FileSystem(ABC):
         pass
 
 
+# choix possibles retournes par UserInterface.error_choice
+IGNORE = 0          # ignorer l'erreur et continuer
+ALWAYS_IGNORE = 1   # toujours ignorer les erreurs (ne plus demander)
+STOP = 2            # stopper l'operation en cours
+CANCEL = 3          # annuler l'operation et faire un rollback
+
+
 class UserInterface(ABC):
     """Ce que FileManager a besoin de l'interface utilisateur"""
 
     @abstractmethod
     def show_message(self, message):
         pass
+
+    @abstractmethod
+    def error_choice(self, message):
+        """Informe l'utilisateur d'une erreur et retourne son choix :
+        IGNORE (0), ALWAYS_IGNORE (1), STOP (2) ou CANCEL (3)"""

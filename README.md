@@ -15,3 +15,18 @@ python3 fmgr.py
 - `fmgr_app/file_manager.py` : `FileManager` (copie / deplacement / suppression), dependances injectees par le constructeur
 - `fmgr_app/os_file_system.py` : implementation `os` / `shutil` de `FileSystem`
 - `fmgr_app/console_ui.py` : implementation console de `UserInterface`
+
+## Gestion des erreurs (atelier 1 - etape 3)
+
+Quand une operation echoue sur un fichier (fichier inexistant, erreur E/S, fichier verrouille...),
+`FileManager` appelle `UserInterface.error_choice(message)` qui retourne :
+
+| Choix | Effet |
+|-------|-------|
+| 0 | Ignorer l'erreur et continuer |
+| 1 | Toujours ignorer les erreurs (on ne redemande plus) |
+| 2 | Stopper l'operation en cours |
+| 3 | Annuler l'operation et rollback des fichiers deja traites |
+
+Le rollback marche pour la copie (on supprime les copies) et le deplacement (on remet les fichiers a leur place).
+Pour la suppression on ne peut pas revenir en arriere, un message previent l'utilisateur.
