@@ -66,3 +66,7 @@ mutmut show <nom_du_mutant>
 
 Config dans `setup.cfg` (on mute uniquement `fmgr_app/file_manager.py`).
 Chaque mutant survivant fait l'objet d'une issue GitHub.
+
+Resultat final : 139 mutants, 138 tues. Le survivant `_process__mutmut_4`
+(`always_ignore = False` -> `None`) est un mutant equivalent (None et False sont tous les deux faux),
+il n'est pas pertinent (voir issue #1).
