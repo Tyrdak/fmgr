@@ -207,6 +207,17 @@ class TestCopyFiles:
         fs.copy.assert_not_called()
 
 
+    def test_rollback_appelle_chaque_undo_une_seule_fois(self, manager, ui):
+        undos = [MagicMock(name="undo_a"), MagicMock(name="undo_b")]
+        stack = list(undos)
+        restant = manager._rollback(stack, 2)
+        undos[0].assert_called_once_with()
+        undos[1].assert_called_once_with()
+        assert restant == 0
+        assert stack == []
+        ui.show_message.assert_not_called()
+
+
 # ---------------------------------------------------------------- move_files
 
 class TestMoveFiles:

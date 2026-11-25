@@ -114,11 +114,11 @@ class FileManager:
         """Annule les operations deja faites (dans l'ordre inverse)"""
         if count > len(undo_stack):
             self.ui.show_message("Rollback impossible for some operations (delete)")
-        while undo_stack:
-            undo = undo_stack.pop()
+        for undo in reversed(undo_stack):
             try:
                 undo()
                 count -= 1
             except Exception as e:
                 self.ui.show_message(f"Rollback error: {e}")
+        undo_stack.clear()
         return count
