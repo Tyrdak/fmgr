@@ -30,3 +30,19 @@ Quand une operation echoue sur un fichier (fichier inexistant, erreur E/S, fichi
 
 Le rollback marche pour la copie (on supprime les copies) et le deplacement (on remet les fichiers a leur place).
 Pour la suppression on ne peut pas revenir en arriere, un message previent l'utilisateur.
+
+## Tests (atelier 2)
+
+Installation :
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements-dev.txt
+```
+
+Lancer les tests :
+
+```bash
+pytest
+```
