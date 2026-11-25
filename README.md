@@ -55,3 +55,14 @@ pytest --cov=fmgr_app.file_manager --cov-branch --cov-report=term-missing --cov-
 
 Le rapport HTML est dans `htmlcov/index.html`. On cible `FileManager` (la classe testee unitairement).
 Resultat : 100% des lignes et 100% des branches (if/else) couvertes.
+
+### Tests de mutation (mutmut)
+
+```bash
+mutmut run
+mutmut results
+mutmut show <nom_du_mutant>
+```
+
+Config dans `setup.cfg` (on mute uniquement `fmgr_app/file_manager.py`).
+Chaque mutant survivant fait l'objet d'une issue GitHub.
